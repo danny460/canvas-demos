@@ -7,6 +7,11 @@ function canvasSupport(){
   return !!document.createElement('canvas').getContext;
 }
 function canvasApp(){
+  document.getElementById("radius").addEventListener("change",updateRadius);
+  document.getElementById("amplitude").addEventListener("change",updateAmp);
+  document.getElementById("sine-count").addEventListener("change",updateSineCount);
+  document.getElementById("is-rotating").addEventListener("change",toggleRotate);
+
   if(!canvasSupport()) return;
   var cvs = document.getElementById('cvs'),
       ctx = cvs.getContext('2d'),
@@ -14,6 +19,7 @@ function canvasApp(){
       radius = 20,
       amplitude = 5,
       sineCount = 10,
+      isRotating = true,
       offset = 0;
   redraw();
 
@@ -27,7 +33,8 @@ function canvasApp(){
       }
       ctx.closePath();
       ctx.stroke();
-      offset++;
+      if(isRotating)
+        offset++;
       requestAnimationFrame(redraw);
   }
 
@@ -40,4 +47,22 @@ function canvasApp(){
         y = ctr.y + (radius + amplitude * Math.sin(sineCount * angle)) * Math.sin(offsetAngle);
     return { x:x, y:y};
   }
+
+  function updateRadius(){
+    radius = document.getElementById("radius").value;
+  }
+
+  function updateAmp(argument) {
+    amplitude = document.getElementById("amplitude").value;   
+  }
+
+  function updateSineCount(){
+    sineCount = document.getElementById("sine-count").value;
+  }
+
+  function toggleRotate(argument) {
+    isRotating = document.getElementById("is-rotating").checked;    
+  }
+
+
 }
