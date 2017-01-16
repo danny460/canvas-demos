@@ -24,6 +24,7 @@ function canvasApp(){
   document.getElementById("amplitude").addEventListener("change",updateAmp);
   document.getElementById("sine-count").addEventListener("change",updateSineCount);
   document.getElementById("is-rotating").addEventListener("change",toggleRotate);
+  
   redraw();
   function redraw(){
       ctx.clearRect(0,0,cvs.width,cvs.height);
@@ -50,6 +51,7 @@ function canvasApp(){
     return { x:x, y:y};
   }
 
+  //input handler
   function updateRadius(){
     var val = parseInt(document.getElementById("radius").value);
     radius = val === val ? val : radius ;
@@ -66,8 +68,7 @@ function canvasApp(){
   }
 
   function toggleRotate(argument) {
-    var val = parseInt(document.getElementById("is-rotating").checked);    
-    isRotating = val === val ? val : isRotating;
+    isRotating = document.getElementById("is-rotating").checked;
   }
 
 
