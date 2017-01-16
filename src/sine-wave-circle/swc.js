@@ -1,4 +1,6 @@
 window.onload = canvasApp();
+//double negate for casting
+// !undefined is true
 function canvasSupport(){
   return !!document.createElement('canvas').getContext;
 }
