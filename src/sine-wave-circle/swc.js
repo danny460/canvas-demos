@@ -1,8 +1,4 @@
 window.onload = canvasApp();
-window.requestAnimFrame = (function(){})();
-
-
-
 function canvasSupport(){
   return !!document.createElement('canvas').getContext;
 }
@@ -54,7 +50,6 @@ function canvasApp(){
     return { x:x, y:y};
   }
 
-  //input handler
   function updateRadius(){
     var val = parseInt(document.getElementById("radius").value);
     radius = val === val ? val : radius ;
