@@ -14,15 +14,18 @@ function canvasApp(){
       radius = 20,
       amplitude = 5,
       sineCount = 10,
+      rotateStep = 1,
       isRotating = true,
       offset = 0;
   document.getElementById("radius").defaultValue = radius;
   document.getElementById("amplitude").defaultValue = amplitude;
   document.getElementById("sine-count").defaultValue = sineCount;
+  document.getElementById("rotate-step").defaultValue = rotateStep;
   document.getElementById("is-rotating").checked = isRotating;    
   document.getElementById("radius").addEventListener("change",updateRadius);
   document.getElementById("amplitude").addEventListener("change",updateAmp);
   document.getElementById("sine-count").addEventListener("change",updateSineCount);
+  document.getElementById("rotate-step").addEventListener("change",updateRotateStep);
   document.getElementById("is-rotating").addEventListener("change",toggleRotate);
   
   redraw();
@@ -37,7 +40,7 @@ function canvasApp(){
       ctx.closePath();
       ctx.stroke();
       if(isRotating)
-        offset++;
+        offset+=rotateStep;
       requestAnimationFrame(redraw);
   }
 
@@ -65,6 +68,11 @@ function canvasApp(){
   function updateSineCount(){
     var val = parseInt(document.getElementById("sine-count").value);
     sineCount = val === val ? val : sineCount;
+  }
+
+  function updateRotateStep(){
+    var val = parseInt(document.getElementById("rotate-step").value);
+    rotateStep = val === val ? val : rotateStep; 
   }
 
   function toggleRotate(argument) {
