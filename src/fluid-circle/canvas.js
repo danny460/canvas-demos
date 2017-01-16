@@ -7,11 +7,6 @@ function canvasSupport(){
   return !!document.createElement('canvas').getContext;
 }
 function canvasApp(){
-  document.getElementById("radius").addEventListener("change",updateRadius);
-  document.getElementById("amplitude").addEventListener("change",updateAmp);
-  document.getElementById("sine-count").addEventListener("change",updateSineCount);
-  document.getElementById("is-rotating").addEventListener("change",toggleRotate);
-
   if(!canvasSupport()) return;
   var cvs = document.getElementById('cvs'),
       ctx = cvs.getContext('2d'),
@@ -21,8 +16,15 @@ function canvasApp(){
       sineCount = 10,
       isRotating = true,
       offset = 0;
+  document.getElementById("radius").defaultValue = radius;
+  document.getElementById("amplitude").defaultValue = amplitude;
+  document.getElementById("sine-count").defaultValue = sineCount;
+  document.getElementById("is-rotating").checked = isRotating;    
+  document.getElementById("radius").addEventListener("change",updateRadius);
+  document.getElementById("amplitude").addEventListener("change",updateAmp);
+  document.getElementById("sine-count").addEventListener("change",updateSineCount);
+  document.getElementById("is-rotating").addEventListener("change",toggleRotate);
   redraw();
-
   function redraw(){
       ctx.clearRect(0,0,cvs.width,cvs.height);
       ctx.beginPath();
