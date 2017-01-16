@@ -11,10 +11,10 @@ function canvasApp(){
   var cvs = document.getElementById('cvs'),
       ctx = cvs.getContext('2d'),
       ctr = {x: cvs.width/2, y: cvs.height/2},
-      radius = 20,
-      amplitude = 5,
-      sineCount = 10,
-      rotateStep = 1,
+      radius = 90,
+      amplitude = 1,
+      sineCount = 3,
+      rotateStep = 10,
       isRotating = true,
       offset = 0;
   document.getElementById("radius").defaultValue = radius;
