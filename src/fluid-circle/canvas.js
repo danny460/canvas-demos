@@ -51,19 +51,23 @@ function canvasApp(){
   }
 
   function updateRadius(){
-    radius = document.getElementById("radius").value;
+    var val = parseInt(document.getElementById("radius").value);
+    radius = val === val ? val : radius ;
   }
 
   function updateAmp(argument) {
-    amplitude = document.getElementById("amplitude").value;   
+    var val = parseInt(document.getElementById("amplitude").value);   
+    amplitude = val === val ? val : amplitude;
   }
 
   function updateSineCount(){
-    sineCount = document.getElementById("sine-count").value;
+    var val = parseInt(document.getElementById("sine-count").value);
+    sineCount = val === val ? val : sineCount;
   }
 
   function toggleRotate(argument) {
-    isRotating = document.getElementById("is-rotating").checked;    
+    var val = parseInt(document.getElementById("is-rotating").checked);    
+    isRotating = val === val ? val : isRotating;
   }
 
 
