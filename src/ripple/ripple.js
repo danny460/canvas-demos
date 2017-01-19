@@ -11,7 +11,9 @@
 	
 	var width = cvs.width = window.innerWidth,
 		height = cvs.height = window.innerHeight,
-		imgData = [];
+		imgCache = [],
+		imgData = [],
+		rippleData = [];
 	window.onresize = resizeHandler;			
 	init();	
 	animate();
@@ -27,12 +29,26 @@
 			ctx.fillRect(-width, i * 2 * stripeWidth, 3 * width, stripeWidth);
 		}
 		ctx.restore();
-		imgData = ctx.getImageData(0, 0, width, height);
+		imgData = imgCache = ctx.getImageData(0, 0, width, height);
+		for (var i = 0, len = width * height, rippleData = new Array(len); i < len;) 
+			rippleData[i++] = 0;
 	}
 
 	function animate(){
 		ctx.putImageData(imgData, 0, 0);
 		rAF(animate);
+	}
+
+	function addRipple(px, py){
+
+	}
+
+	function drawImage(){
+		for(var i = 0; i < height; i++){
+			for(var j = 0; j < width; j++){
+				imgData[i][j] =
+			}
+		}
 	}
 
 	function resizeHandler(){
