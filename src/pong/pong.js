@@ -1,5 +1,19 @@
 (function(){
 	if(!canvasSupport()) return;
+	Player.prototype.move = move;
+	Player.prototype.clamp = clamp;
+	Player.prototype.draw = draw;
+	Ball.prototype.handleCollision = handleCollision;
+	Ball.prototype.hasIntersect = hasIntersect;
+	Ball.prototype.checkLineIntersection = checkLineIntersection;
+	Ball.prototype.move = moveBall;
+	Ball.prototype.draw = drawBall;
+	Vector2.prototype.add = add;
+	Vector2.prototype.sub = sub;
+	Vector2.prototype.multiply = multiply;
+	Vector2.prototype.normalize = normalize;
+	Vector2.prototype.length = length;
+
 	var cvs = document.getElementById("cvs");
 	var	ctx = cvs.getContext("2d");
 	var width = cvs.width;
@@ -17,13 +31,6 @@
 		keyMap[evt.keyCode] = evt.type == "keydown";
 	};
 
-	Player.prototype.move = move;
-	Player.prototype.clamp = clamp;
-	Player.prototype.draw = draw;
-	Ball.prototype.handleCollision = handleCollision;
-	Ball.prototype.hasIntersect = hasIntersect;
-	Ball.prototype.move = moveBall;
-	Ball.prototype.draw = drawBall;
 	newGame();
 	animate(new Date().getTime(), ctx, p1, p2);
 
@@ -33,38 +40,63 @@
 		this.winner = null;
 	}
 
-
 	function Player(initX){
 		this.height = 100;
 		this.width = 20;
-		this.positionX = initX;
-		this.positionY = height/2 - this.height/2;
+		this.position = new Vector2(initX, height/2 - this.height/2);
 		this.velocity = 0;
 		this.score = 0;
 	}
 
 	function Ball(){
-		this.center = {x: width/2 , y: height/2};
+		this.center = new Vector2(width/2, height/2);
+		this.velocity = new Vector2(0, 0);
 		this.radius = 10;
-		this.velocity = {x:0, y:0};
+	}
+
+	function Vector2(x, y){
+		this.x = x;
+		this.y = y;
+	}
+
+	function add(vector){
+		return new Vector2(this.x + vector.x , this.y + vector.y);
+	}
+
+	function sub(vector){
+		return new Vector2(this.x - vector.x , this.y - vector.y);
+	}
+
+	function multiply(factor){
+		return new Vector2(this.x * factor, this.y * factor);
+	}
+
+	function normalize(){
+		var factor = 1. / this.length();
+		this.x *= factor;
+		this.y *= factor;
 	}
 	
+	function length(){
+		return Math.sqrt(this.x * this.x + this.y * this.y);
+	}
+
 	//Player.prototype.move
 	function move(){
-		this.positionY += this.velocity * elapsedSinceLastLoop;
+		this.position.y += this.velocity * elapsedSinceLastLoop;
 		this.clamp();
 	}
 	//Player.prototype.clamp
 	function clamp(){
-		if(this.positionY < 0) 
-			this.positionY = 0;
-		else if(this.positionY > height - this.height) 
-			this.positionY = height - this.height;
+		if(this.position.y < 0) 
+			this.position.y = 0;
+		else if(this.position.y > height - this.height) 
+			this.position.y = height - this.height;
 	}
 	//Player.prototype.draw
 	function draw(ctx){
 		ctx.beginPath();
-		ctx.rect(this.positionX, this.positionY,this.width,this.height);
+		ctx.rect(this.position.x, this.position.y,this.width,this.height);
 		ctx.fillStyle = "#f0f0f0";
 		ctx.fill();
 		ctx.closePath();
@@ -102,27 +134,80 @@
 
 			/**collision with player**/
 			/*p1*/
-			if(this.hasIntersect(p1)){
+			var intersection = this.hasIntersect(p1);
+			if(intersection !== null){
 				//todo
+				console.log("p1");
 			}
 			/*p2*/
-			else if(this.hasIntersect(p2)){
+			else{
+				intersection = this.hasIntersect(p2);
+				if(intersection !== null){
+					console.log("p2");
+				}else{
+					console.log("no hit");
+				}
 				//todo
 			}
 		}
 	}
 
+	//check circle - rectangle intersection
 	function hasIntersect(player){
-		return this.center.x > player.positionX - this.radius 
-			&& this.center.x < player.positionX + player.width + this.radius
-			&& this.center.y > player.positionY - this.radius
-			&& this.center.y < player.positionY + player.height + this.radius;
+		console.log(player.position.x);
+		var intersection = null;
+		var height = new Vector2(0, player.height);
+		var width = new Vector2(player.width, 0);
+		var vertices = [];
+		var index = 0;
+		var length = 4;
+		vertices.push(player.position);
+		vertices.push(vertices[0].add(width));
+		vertices.push(vertices[1].add(height));
+		vertices.push(vertices[2].sub(width));
+		while(intersection==null && index !== length){
+			if(index == 3){
+				console.log(index+1, vertices[index], vertices[0]);
+				intersection = this.checkLineIntersection(vertices[index], vertices[0]);
+			}
+			else{
+				console.log(index+1, vertices[index], vertices[index+1]);
+				intersection = this.checkLineIntersection(vertices[index], vertices[index+1]);
+			}
+			console.log("result:", intersection);
+			index++;
+		}
+		return intersection;
+	}
+
+	function checkLineIntersection(lineStart, lineEnd){
+		var isVertical = lineStart.sub(lineEnd).x === 0;
+		var distanceFromStart = this.center.sub(lineStart);
+		var length = lineEnd.sub(lineStart).length();
+		var distance, adjacent;
+		if(isVertical){
+			distance = distanceFromStart.x;
+			adjacent = distanceFromStart.y;
+		}else{
+			distance = distanceFromStart.y;
+			adjacent = distanceFromStart.x;
+		}
+		if(distance <= this.radius){
+			if(length < Math.abs(adjacent))
+				return null;
+			else{
+				var offset = Math.sqrt(this.radius * this.radius - distance * distance);
+				var offsetVector = isVertical ? new Vector2(distance, offset) : new Vector2(offset, distance);
+				
+				return this.center.add(offsetVector);
+			}	
+		}else
+			return null;
 	}
 
 	//Ball.move
 	function moveBall(){
-		this.center.x += this.velocity.x * elapsedSinceLastLoop;
-		this.center.y += this.velocity.y * elapsedSinceLastLoop;
+		this.center = this.center.add(this.velocity.multiply(elapsedSinceLastLoop));
 	}
 	//Ball.draw
 	function drawBall(ctx){
@@ -189,7 +274,6 @@
 	}
 
 	function restart(){
-		//todo
 		setTimeout(function(){
 			newGame();
 		},10000);
@@ -197,8 +281,8 @@
 
 	function newRound(player){
 		game.isStarted = true;
-		var velocityX = 0.2;
-		var toRight = player ? (player.positionX - width/2) > 0 : Math.random() >= 0.5;
+		var velocityX = 0.5;
+		var toRight = player ? (player.position.x - width/2) > 0 : Math.random() >= 0.5;
 		ball = new Ball();
 		ball.velocity.x = toRight ? velocityX : -velocityX;
 	}
