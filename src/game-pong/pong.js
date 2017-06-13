@@ -3,13 +3,13 @@
 	Player.prototype.move = move;
 	Player.prototype.draw = draw;
 	Ball.prototype.handleCollision = handleCollision;
-	// Ball.prototype.addForce = addForce;
 	Ball.prototype.handleBoardCollision = handleBoardCollision;
 	Ball.prototype.handlePlayerCollision = handlePlayerCollision;
 	Ball.prototype.hasIntersect = hasIntersect;
 	Ball.prototype.checkLineIntersection = checkLineIntersection;
 	Ball.prototype.move = moveBall;
 	Ball.prototype.draw = drawBall;
+
 	Vector2.prototype.add = add;
 	Vector2.prototype.sub = sub;
 	Vector2.prototype.multiply = multiply;
@@ -64,11 +64,6 @@
 		this.radius = 10;
 		this.color = "white";
 	}
-	//Game.newRound()
-	//Game.reStart()
-	//Game.pause()
-	//Game.checkWin()
-
 	//Vector2.add
 	function add(vector){
 		return new Vector2(this.x + vector.x , this.y + vector.y);
